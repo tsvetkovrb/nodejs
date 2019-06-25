@@ -1,5 +1,7 @@
 const http = require('http');
 
+let users = [];
+
 const server = http.createServer((req, res) => {
   const { url, method } = req;
 
@@ -28,19 +30,14 @@ const server = http.createServer((req, res) => {
   }
 
   if (url === '/users') {
+    const mapUsers = users.map(user => {
+      return `<li>${user}</li>`;
+    });
+    console.log(mapUsers);
     res.setHeader('Content-Type', 'text/html');
     res.write(`
     <ul>
-      <li>User 1</li>
-      <li>User 2</li>
-      <li>User 3</li>
-      <li>User 4</li>
-      <li>User 5</li>
-      <li>User 6</li>
-      <li>User 7</li>
-      <li>User 8</li>
-      <li>User 9</li>
-      <li>User 10</li>
+      ${mapUsers.join(' ')}
     </ul>
    `);
     return res.end();
@@ -50,7 +47,6 @@ const server = http.createServer((req, res) => {
     let body = [];
 
     req.on('data', chunk => {
-      console.log(chunk);
       body.push(chunk);
     });
 
@@ -58,7 +54,9 @@ const server = http.createServer((req, res) => {
       const bodyParser = Buffer.concat(body).toString();
       const message = bodyParser.split('=')[1];
 
-      console.log(message);
+      users.push(message);
+
+      console.log(users);
 
       res.writeHead(302, {
         Location: '/'

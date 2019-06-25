@@ -19,7 +19,6 @@ const requestHandler = (req, res) => {
     const body = [];
 
     req.on('data', chunk => {
-      console.log(chunk);
       body.push(chunk);
     });
 

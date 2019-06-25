@@ -1,0 +1,14 @@
+{
+  "name": "nodejs",
+  "version": "1.0.0",
+  "main": "app.js",
+  "repository": "git@github.com:tsvetkovrb/nodejs.git",
+  "author": "Roman <tsvetkovv22@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "start": "nodemon app.js"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
