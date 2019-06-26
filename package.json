@@ -6,9 +6,13 @@
   "author": "Roman <tsvetkovv22@gmail.com>",
   "license": "MIT",
   "scripts": {
-    "start": "nodemon app.js"
+    "start": "nodemon index.js",
+    "homework": "nodemon homeworks/index.js"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
   }
 }
