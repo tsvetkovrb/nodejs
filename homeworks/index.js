@@ -12,10 +12,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.get('/users', (req, res, next) => {
-  console.log('Hello from /users');
-  next();
-});
+function test(req, res, next) {
+  console.log('hello from test');
+  res.send('Hello');
+}
+
+app.get('/users', test);
 
 app.use('/users', (req, res) => {
   console.log('Hello from users middleware');
@@ -37,7 +39,7 @@ app.get('/', (req, res, next) => {
   next();
 });
 
-app.use('/', (req, res) => {
+app.use((req, res) => {
   console.log('Hello from / middleware');
   res.send('<h1>Hello from /</h1>');
 });
