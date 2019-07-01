@@ -7,7 +7,8 @@
   "license": "MIT",
   "scripts": {
     "start": "nodemon index.js",
-    "homework": "nodemon homeworks/index.js"
+    "homework": "nodemon homeworks/index.js",
+    "homework:2": "nodemon homeworks/homework2/index.js"
   },
   "devDependencies": {
     "nodemon": "^1.19.1"

@@ -1,28 +1,16 @@
 const express = require('express');
 
+const path = require('path');
+
 const router = express.Router();
 
+const rootDir = require('../utils/path');
+
 router.get('/add-product', (req, res, next) => {
-  res.send(`
-  <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <meta http-equiv="X-UA-Compatible" content="ie=edge">
-      <title>Hello</title>
-    </head>
-    <body>
-      <form action="/product" method="POST">
-        <input type="text" name="title">
-        <input type="button" value="Submit">
-      </form>
-    </body>
-    </html>
-  `);
+  res.sendFile(path.join(rootDir, 'views', 'add-product.html'));
 });
 
-router.post('/product', (req, res) => {
+router.post('/add-product', (req, res) => {
   console.log(req.body);
   res.redirect('/');
 });
