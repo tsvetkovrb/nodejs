@@ -11,6 +11,7 @@ router.get('/', (req, res, next) => {
     prods: products,
     pageTitle: 'Shop',
     path: '/',
+    hasProducts: products.length > 0,
   }); // Понимает какой файл использовать, т.к прописан конфиг в index.js
 });
 
