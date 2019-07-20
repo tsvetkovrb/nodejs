@@ -3,8 +3,9 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const expresHbs = require('express-handlebars');
 
-const adminData = require('./routes/admin');
+const adminRoutes = require('./routes/admin');
 const shopRoutes = require('./routes/shop');
+const errorController = require('./controllers/error');
 
 const app = express();
 
@@ -14,14 +15,9 @@ app.set('views', 'views'); // можно заменить views по умолч�
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/admin', adminData.routes);
+app.use('/admin', adminRoutes.routes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  res.status(404).render('404', {
-    layout: false,
-    pageTitle: 'Page Not Found',
-  });
-});
+app.use(errorController.get404);
 
 app.listen(3001, () => console.log('Server is listen on port 3001'));
