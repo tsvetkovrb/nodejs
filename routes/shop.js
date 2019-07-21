@@ -6,9 +6,10 @@ router.get('/', shopController.getIndex);
 
 router.get('/products', shopController.getProducts);
 router.get('/products/:id', shopController.getProduct);
-router.get('/card', shopController.getCard);
-router.post('/card', shopController.postCard);
+router.get('/cart', shopController.getCard);
+router.post('/cart', shopController.postCard);
 router.get('/orders', shopController.getOrders);
 router.get('/checkout', shopController.getCheckout);
+router.post('/card-delete-item', shopController.postCartDeleteProduct);
 
 module.exports = router;

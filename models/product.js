@@ -1,6 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
+const Cart = require('./cart');
+
 const p = path.join(
   path.dirname(process.mainModule.filename),
   'data',
@@ -56,6 +58,19 @@ module.exports = class Product {
     getProductsFromFile(products => {
       const product = products.find(p => id === p.id);
       callback(product);
+    });
+  }
+
+  static deleteById(id) {
+    getProductsFromFile(products => {
+      const product = products.find(prod => prod.id === id);
+      const updatedProducts = products.filter(p => id !== p.id);
+
+      fs.writeFile(p, JSON.stringify(updatedProducts), error => {
+        if (!error) {
+          Cart.deleteProduct(id, product.price);
+        }
+      });
     });
   }
 };
