@@ -2,34 +2,53 @@ const Product = require('../models/product');
 const Cart = require('../models/cart');
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render('shop/product-list', {
-      prods: products,
-      pageTitle: 'Products',
-      path: '/products',
-    }); // Понимает какой файл использовать, т.к прописан конфиг в index.js
-  });
+  Product.findAll()
+    .then(products => {
+      res.render('shop/product-list', {
+        prods: products,
+        pageTitle: 'Products',
+        path: '/products',
+      }); // Понимает какой файл использовать, т.к прописан конфиг в index.js
+    })
+    .catch(error => console.log(error));
 };
 
 exports.getProduct = (req, res, next) => {
   const { id } = req.params;
-  Product.findById(id, product => {
-    res.render('shop/product-detail', {
-      pageTitle: product.title,
-      path: '/products',
-      product,
-    });
-  });
+  // Product.findAll({
+  //   where: {
+  //     id,
+  //   },
+  // })
+  //   .then(products => {
+  //     res.render('shop/product-detail', {
+  //       pageTitle: products[0].title,
+  //       path: '/products',
+  //       product: products[0],
+  //     });
+  //   })
+  //   .catch(error => console.log(error));
+  Product.findByPk(id)
+    .then(product => {
+      res.render('shop/product-detail', {
+        pageTitle: product.title,
+        path: '/products',
+        product: product,
+      });
+    })
+    .catch(error => console.log(error));
 };
 
 exports.getIndex = (req, res, next) => {
-  Product.fetchAll(products => {
-    res.render('shop/index', {
-      prods: products,
-      pageTitle: 'Shop',
-      path: '/',
-    });
-  });
+  Product.findAll()
+    .then(products => {
+      res.render('shop/index', {
+        prods: products,
+        pageTitle: 'Shop',
+        path: '/',
+      });
+    })
+    .catch(error => console.log(error));
 };
 
 exports.getCard = (req, res, next) => {
