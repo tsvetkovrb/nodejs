@@ -13,14 +13,13 @@ exports.getEditProduct = (req, res, next) => {
 
   const { productId } = req.params;
 
-  let editProduct;
-
   if (!editMode) {
     return res.redirect('/');
   }
 
-  Product.findByPk(productId)
-    .then(product => {
+  req.user
+    .getProducts({ where: { id: productId } })
+    .then(([product]) => {
       if (!product) {
         return res.redirect('/');
       }
@@ -53,12 +52,13 @@ exports.postEditProduct = (req, res, next) => {
 exports.postAddProduct = (req, res) => {
   const { title, imageUrl, price, description } = req.body;
 
-  Product.create({
-    title,
-    price,
-    imageUrl,
-    description,
-  })
+  req.user
+    .createProduct({
+      title,
+      price,
+      imageUrl,
+      description,
+    })
     .then(() => {
       res.redirect('/admin/products');
     })
@@ -77,7 +77,8 @@ exports.deleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.findAll()
+  req.user
+    .getProducts()
     .then(products => {
       res.render('admin/products', {
         prods: products,
