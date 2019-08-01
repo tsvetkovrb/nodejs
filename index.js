@@ -8,6 +8,8 @@ const errorController = require('./controllers/error');
 const sequelize = require('./utils/database');
 const Product = require('./models/product');
 const User = require('./models/user');
+const Cart = require('./models/cart');
+const CartItem = require('./models/cart-item');
 
 const app = express();
 
@@ -31,16 +33,16 @@ app.use(shopRoutes);
 
 app.use(errorController.get404);
 
-Product.belongsTo(User, {
-  constrains: true,
-  onDelete: 'CASCADE',
-});
-
+Product.belongsTo(User, { constrains: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-  // .sync({ force: true })
-  .sync()
+  .sync({ force: true })
+  // .sync()
   .then(() => {
     return User.findByPk(1);
   })
@@ -55,6 +57,6 @@ sequelize
   })
   .then(user => {
     console.log(user);
-    app.listen(3001, () => console.log('Server is listen on port 3001'));
+    app.listen(2222, () => console.log('Server is listen on port 3001'));
   })
   .catch(error => console.log(error));
