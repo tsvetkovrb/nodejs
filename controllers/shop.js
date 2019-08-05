@@ -52,27 +52,39 @@ exports.getIndex = (req, res, next) => {
 };
 
 exports.getCard = (req, res, next) => {
-  Cart.getCart(cart => {
-    Product.fetchAll(products => {
-      const cardProducts = [];
-      for (let product of products) {
-        const cartProductData = cart.products.find(
-          prod => prod.id === product.id,
-        );
-        if (cartProductData) {
-          cardProducts.push({
-            productData: product,
-            qty: cartProductData.qty,
-          });
-        }
-      }
-      res.render('shop/cart', {
+  req.user.getCart()
+    .then(cart => {
+      return cart.getProducts().then(product => {
+        res.render('shop/cart', {
         path: '/cart',
         pageTitle: 'Your cart',
-        products: cardProducts,
+        products: product,
       });
-    });
-  });
+        
+      }).catch(err => console.log(err));
+    })
+    .catch(error => console.log(error))
+  // Cart.getCart(cart => {
+  //   Product.fetchAll(products => {
+  //     const cardProducts = [];
+  //     for (let product of products) {
+  //       const cartProductData = cart.products.find(
+  //         prod => prod.id === product.id,
+  //       );
+  //       if (cartProductData) {
+  //         cardProducts.push({
+  //           productData: product,
+  //           qty: cartProductData.qty,
+  //         });
+  //       }
+  //     }
+  //     res.render('shop/cart', {
+  //       path: '/cart',
+  //       pageTitle: 'Your cart',
+  //       products: cardProducts,
+  //     });
+  //   });
+  // });
 };
 
 exports.getCheckout = (req, res, next) => {
@@ -82,12 +94,13 @@ exports.getCheckout = (req, res, next) => {
   });
 };
 
-exports.postCard = (req, res, next) => {
+exports.postCart = (req, res, next) => {
   const { productId } = req.body;
-  Product.findById(productId, product => {
-    Cart.addProduct(productId, product.price);
-  });
-  res.redirect('/cart');
+  req.user.getCart()
+  // Product.findById(productId, product => {
+  //   Cart.addProduct(productId, product.price);
+  // });
+  // res.redirect('/cart');
 };
 
 exports.getOrders = (req, res, next) => {

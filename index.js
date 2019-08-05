@@ -41,22 +41,23 @@ Cart.belongsToMany(Product, { through: CartItem });
 Product.belongsToMany(Cart, { through: CartItem });
 
 sequelize
-  .sync({ force: true })
-  // .sync()
+  // .sync({ force: true })
+  .sync()
   .then(() => {
     return User.findByPk(1);
   })
   .then(user => {
     if (!user) {
-      User.create({
+      return User.create({
         name: 'Roman',
         email: 'tsvetkovv22@gmail.com',
       });
-      return user;
     }
+    return user;
   })
   .then(user => {
-    console.log(user);
-    app.listen(2222, () => console.log('Server is listen on port 3001'));
+    return user.createCart();
+  }).then(() => {
+    app.listen(2222, () => console.log('http://localhost:2222'));
   })
   .catch(error => console.log(error));
