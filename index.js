@@ -16,7 +16,7 @@ const OrderItem = require('./models/order-item');
 const app = express();
 
 app.set('view engine', 'ejs');
-app.set('views', 'views'); // можно заменить views по умолчанию на другую дирректорию
+app.set('views', 'views'); 
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
