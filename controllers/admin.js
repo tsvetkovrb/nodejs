@@ -51,15 +51,11 @@ exports.getAddProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res) => {
   const { title, imageUrl, price, description } = req.body;
-
-  req.user
-    .createProduct({
-      title,
-      price,
-      imageUrl,
-      description,
-    })
+  const product = new Product(title, price, description, imageUrl);
+  product
+    .save()
     .then(() => {
+      console.log('Created Product');
       res.redirect('/admin/products');
     })
     .catch(error => console.log(error));
