@@ -85,7 +85,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin products',
         path: '/admin/products',
-      }); // Понимает какой файл использовать, т.к прописан конфиг в index.js
+      }); 
     })
     .catch(error => console.log(error));
 };
