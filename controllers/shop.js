@@ -70,34 +70,43 @@ exports.getCard = (req, res, next) => {
 
 exports.postCart = (req, res, next) => {
   const { productId } = req.body;
-  let fetchedCart;
-  let newQuantity = 1;
-  req.user
-    .getCart()
-    .then(cart => {
-      fetchedCart = cart;
-      return cart.getProducts({ where: { id: productId } });
-    })
-    .then(products => {
-      let product;
-      if (products.length > 0) {
-        product = products[0];
-      }
-
-      if (product) {
-        const oldQuantity = product.cartItem.quantity;
-        newQuantity = oldQuantity + 1;
-        return product;
-      }
-      return Product.findByPk(productId);
-    })
+  Product.findById(productId)
     .then(product => {
-      return fetchedCart.addProduct(product, {
-        through: { quantity: newQuantity },
-      });
+      console.log('req.user', req.user)
+      return req.user.addToCart(product);
     })
-    .then(() => res.redirect('/cart'))
+    .then(result => {
+      console.log('result!!!!!!!!!!!!!!!! ', result);
+    })
     .catch(error => console.log(error));
+  // let fetchedCart;
+  // let newQuantity = 1;
+  // req.user
+  //   .getCart()
+  //   .then(cart => {
+  //     fetchedCart = cart;
+  //     return cart.getProducts({ where: { id: productId } });
+  //   })
+  //   .then(products => {
+  //     let product;
+  //     if (products.length > 0) {
+  //       product = products[0];
+  //     }
+
+  //     if (product) {
+  //       const oldQuantity = product.cartItem.quantity;
+  //       newQuantity = oldQuantity + 1;
+  //       return product;
+  //     }
+  //     return Product.findByPk(productId);
+  //   })
+  //   .then(product => {
+  //     return fetchedCart.addProduct(product, {
+  //       through: { quantity: newQuantity },
+  //     });
+  //   })
+  //   .then(() => res.redirect('/cart'))
+  //   .catch(error => console.log(error));
 };
 
 exports.postOrder = (req, res, next) => {
@@ -134,7 +143,7 @@ exports.postOrder = (req, res, next) => {
 
 exports.getOrders = (req, res, next) => {
   req.user
-    .getOrders({include: ['products']})
+    .getOrders({ include: ['products'] })
     .then(orders => {
       res.render('shop/orders', {
         path: '/orders',

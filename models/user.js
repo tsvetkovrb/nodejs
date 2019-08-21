@@ -2,8 +2,8 @@ const ObjectId = require('mongodb').ObjectId;
 const getDb = require('../utils/database').getDb;
 
 class User {
-  constructor(username, email, cart, id) {
-    this.username = username;
+  constructor(name, email, cart, id) {
+    this.name = name;
     this.email = email;
     this.cart = cart;
     this._id = id;
@@ -20,13 +20,13 @@ class User {
     // })
 
     const updatedCart = {
-      items: [{ ...product, quantity: 1 }],
+      items: [{ productId: new ObjectId(product._id), quantity: 1 }],
     };
     const db = getDb();
 
     db.collection('users').updateOne(
-      { _id: new ObjectId(this.id) },
-      { $set: {cart: updatedCart} },
+      { _id: new ObjectId(this._id) },
+      { $set: { cart: updatedCart } },
     );
   }
 
