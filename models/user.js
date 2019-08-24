@@ -16,13 +16,14 @@ class User {
 
   addToCart(product) {
     const cartProductIndex= this.cart.items.findIndex(cp => {
-      return cp.productId === product.id;
+      console.log(cp)
+      return cp.productId.toString() === product._id.toString();
     })
 
     let newQuantity = 1;
     const updatedCartItems = [...this.cart.items];
 
-    if (cartProduct >= 0) {
+    if (cartProductIndex >= 0) {
       newQuantity = this.cart.items[cartProductIndex].quantity + 1;
       updatedCartItems[cartProductIndex].quantity = newQuantity;
     } else {
