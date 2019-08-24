@@ -50,20 +50,15 @@ exports.getIndex = (req, res, next) => {
     .catch(error => console.log(error));
 };
 
-exports.getCard = (req, res, next) => {
+exports.getCart = (req, res, next) => {
   req.user
     .getCart()
-    .then(cart => {
-      return cart
-        .getProducts()
-        .then(product => {
-          res.render('shop/cart', {
-            path: '/cart',
-            pageTitle: 'Your cart',
-            products: product,
-          });
-        })
-        .catch(err => console.log(err));
+    .then(products => {
+      res.render('shop/cart', {
+        path: '/cart',
+        pageTitle: 'Your cart',
+        products,
+      });
     })
     .catch(error => console.log(error));
 };
@@ -72,11 +67,10 @@ exports.postCart = (req, res, next) => {
   const { productId } = req.body;
   Product.findById(productId)
     .then(product => {
-      console.log('req.user', req.user)
-      return req.user.addToCart(product);
+     return req.user.addToCart(product);
     })
     .then(result => {
-      console.log('result!!!!!!!!!!!!!!!! ', result);
+      res.redirect('/cart');
     })
     .catch(error => console.log(error));
   // let fetchedCart;
