@@ -52,14 +52,12 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res) => {
   const { title, imageUrl, price, description } = req.body;
-  const product = new Product(
-    title,
+  const product = new Product({
     price,
+    title,
     description,
     imageUrl,
-    null,
-    req.user._id,
-  );
+  });
   product
     .save()
     .then(() => {
@@ -85,7 +83,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Admin products',
         path: '/admin/products',
-      }); 
+      });
     })
     .catch(error => console.log(error));
 };
