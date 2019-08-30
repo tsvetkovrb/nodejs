@@ -34,15 +34,15 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { title, imageUrl, price, description, editProductId } = req.body;
-  const product = new Product(
-    title,
-    price,
-    description,
-    imageUrl,
-    editProductId,
-  );
-  product
-    .save()
+
+  Product.findById(editProductId)
+    .then(product => {
+      product.title = title;
+      product.price = price;
+      product.description = description;
+      product.imageUrl = imageUrl;
+      return product.save();
+    })
     .then(result => {
       console.log('Updated product');
       res.redirect('/admin/products');
@@ -69,7 +69,7 @@ exports.postAddProduct = (req, res) => {
 
 exports.deleteProduct = (req, res, next) => {
   const { productId } = req.body;
-  Product.deleteById(productId)
+  Product.findByIdAndRemove(productId)
     .then(() => {
       res.redirect('/admin/products');
     })
@@ -77,7 +77,7 @@ exports.deleteProduct = (req, res, next) => {
 };
 
 exports.getProducts = (req, res, next) => {
-  Product.fetchAll()
+  Product.find()
     .then(products => {
       res.render('admin/products', {
         prods: products,
