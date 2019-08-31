@@ -101,7 +101,7 @@ exports.postOrder = (req, res, next) => {
       const products = user.cart.items.map(i => {
         return {
           quantity: i.quantity,
-          product: i.productId,
+          product: { ...i.productId._doc },
         };
       });
       const order = new Order({
@@ -114,15 +114,17 @@ exports.postOrder = (req, res, next) => {
       return order.save();
     })
     .then(() => {
+      return req.user.clearCart();
+    })
+    .then(() => {
       res.redirect('/orders');
     })
     .catch(error => console.log(error));
 };
 
 exports.getOrders = (req, res, next) => {
-  req.user
-    .getOrders({ include: ['products'] })
-    .then(orders => {
+  Order.find({ 'user.userId': req.user._id })
+  .then(orders => {
       res.render('shop/orders', {
         path: '/orders',
         pageTitle: 'Your Orders',

@@ -59,11 +59,18 @@ userSchema.methods.removeFromCart = function(productId) {
   const updatedCartItems = this.cart.items.filter(item => {
     return item.productId.toString() !== productId.toString();
   });
-  console.log('TCL: userSchema.methods.removeFromCart -> updatedCartItems', updatedCartItems);
-
+  
   this.cart.items = updatedCartItems;
   return this.save();
 };
+
+userSchema.methods.clearCart = function() {
+  this.cart = {
+    items: []
+  };
+
+  return this.save();
+}
 
 module.exports = mongoose.model('User', userSchema);
 // const ObjectId = require('mongodb').ObjectId;
