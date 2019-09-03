@@ -8,6 +8,7 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Products',
         path: '/products',
+        isAuthenticated: req.isLoggedIn,
       }); // Понимает какой файл использовать, т.к прописан конфиг в index.js
     })
     .catch(error => console.log(error));
@@ -21,6 +22,7 @@ exports.getProduct = (req, res, next) => {
         pageTitle: product.title,
         path: '/products',
         product: product,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
@@ -33,6 +35,7 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
@@ -48,6 +51,7 @@ exports.getCart = (req, res, next) => {
         path: '/cart',
         pageTitle: 'Your cart',
         products,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
@@ -129,6 +133,7 @@ exports.getOrders = (req, res, next) => {
         path: '/orders',
         pageTitle: 'Your Orders',
         orders,
+        isAuthenticated: req.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
