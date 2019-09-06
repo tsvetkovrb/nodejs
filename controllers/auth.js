@@ -12,12 +12,15 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   User.findById('5d696fb7c66f040ad162d4d0')
-  .then(user => {
-    req.session.isLoggedIn = true;
-    req.session.user = user;
-    res.redirect('/');
-  })
-  .catch(error => console.log(error));
+    .then(user => {
+      req.session.isLoggedIn = true;
+      req.session.user = user;
+      req.session.save(error => {
+        console.log('TCL: exports.postLogin -> error', error);
+        res.redirect('/');
+      });
+    })
+    .catch(error => console.log(error));
 };
 
 exports.postLogout = (req, res, next) => {

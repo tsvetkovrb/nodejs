@@ -13,8 +13,10 @@
       </div>
         <h2> $<%= product.price %> </h2>
         <p> <%= product.description %> </h2>
-        <%- include('../includes/add-to-cart.ejs') %>
-    </div>
+          <% if (isAuthenticated) { %>
+            <%- include('../includes/add-to-cart.ejs') %>
+          <% } %>
+      </div>
   </main>
 </body>
 
