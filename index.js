@@ -39,12 +39,12 @@ app.use((req, res, next) => {
     return next();
   }
   User.findById(req.session.user._id)
-  .then(user => {
-    req.user = user;
-    next();
-  })
-  .catch(error => console.log(error));
-})
+    .then(user => {
+      req.user = user;
+      next();
+    })
+    .catch(error => console.log(error));
+});
 
 app.use('/admin', adminRoutes.routes);
 app.use(shopRoutes);
@@ -55,18 +55,6 @@ app.use(errorController.get404);
 mongoose
   .connect(MONGODB_URI)
   .then(() => {
-    User.findOne().then(user => {
-      if (!user) {
-        const user = new User({
-          name: 'Roman',
-          email: 'tsvetkovv22@gmail.com',
-          cart: {
-            items: [],
-          },
-        });
-        user.save();
-      }
-    });
     app.listen(2222, () => console.log('http://localhost:2222'));
   })
   .catch(error => console.log('Error connecting: ', error));
