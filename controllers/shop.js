@@ -8,7 +8,6 @@ exports.getProducts = (req, res, next) => {
         prods: products,
         pageTitle: 'Products',
         path: '/products',
-        isAuthenticated: req.session.isLoggedIn,
       }); // Понимает какой файл использовать, т.к прописан конфиг в index.js
     })
     .catch(error => console.log(error));
@@ -22,7 +21,6 @@ exports.getProduct = (req, res, next) => {
         pageTitle: product.title,
         path: '/products',
         product: product,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
@@ -35,8 +33,6 @@ exports.getIndex = (req, res, next) => {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
-        isAuthenticated: req.session.isLoggedIn,
-        csrfToken: req.csrfToken(),
       });
     })
     .catch(error => console.log(error));
@@ -52,7 +48,6 @@ exports.getCart = (req, res, next) => {
         path: '/cart',
         pageTitle: 'Your cart',
         products,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
@@ -68,34 +63,6 @@ exports.postCart = (req, res, next) => {
       res.redirect('/cart');
     })
     .catch(error => console.log(error));
-  // let fetchedCart;
-  // let newQuantity = 1;
-  // req.user
-  //   .getCart()
-  //   .then(cart => {
-  //     fetchedCart = cart;
-  //     return cart.getProducts({ where: { id: productId } });
-  //   })
-  //   .then(products => {
-  //     let product;
-  //     if (products.length > 0) {
-  //       product = products[0];
-  //     }
-
-  //     if (product) {
-  //       const oldQuantity = product.cartItem.quantity;
-  //       newQuantity = oldQuantity + 1;
-  //       return product;
-  //     }
-  //     return Product.findByPk(productId);
-  //   })
-  //   .then(product => {
-  //     return fetchedCart.addProduct(product, {
-  //       through: { quantity: newQuantity },
-  //     });
-  //   })
-  //   .then(() => res.redirect('/cart'))
-  //   .catch(error => console.log(error));
 };
 
 exports.postOrder = (req, res, next) => {
@@ -111,7 +78,7 @@ exports.postOrder = (req, res, next) => {
       });
       const order = new Order({
         user: {
-          name: req.user.name,
+          email: req.user.email,
           userId: req.user,
         },
         products: products,
@@ -134,7 +101,6 @@ exports.getOrders = (req, res, next) => {
         path: '/orders',
         pageTitle: 'Your Orders',
         orders,
-        isAuthenticated: req.session.isLoggedIn,
       });
     })
     .catch(error => console.log(error));
