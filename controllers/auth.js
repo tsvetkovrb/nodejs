@@ -9,6 +9,7 @@ exports.getLogin = (req, res, next) => {
     path: '/login',
     pageTitle: 'Login',
     isAuthenticated: req.session.isLoggedIn,
+    csrfToken: req.csrfToken(),
   });
 };
 
