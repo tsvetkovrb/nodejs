@@ -32,6 +32,20 @@ exports.getLogin = (req, res, next) => {
 
 exports.postLogin = (req, res, next) => {
   const { email, password } = req.body;
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('auth/login', {
+      path: '/login',
+      pageTitle: 'Login',
+      errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email,
+        password,
+      },
+    });
+  }
+
   User.findOne({ email })
     .then(user => {
       if (!user) {
@@ -79,6 +93,11 @@ exports.getSignup = (req, res, next) => {
     path: '/signup',
     pageTitle: 'Signup',
     errorMessage,
+    oldInput: {
+      email: '',
+      password: '',
+      confirmPassword: '',
+    },
   });
 };
 
@@ -87,42 +106,40 @@ exports.postSignup = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    console.log(errors.array())
+    console.log('******************', errors.array());
     return res.status(422).render('auth/signup', {
       path: '/signup',
       pageTitle: 'Signup',
       errorMessage: errors.array()[0].msg,
+      oldInput: {
+        email,
+        password,
+        confirmPassword,
+      },
     });
   }
-
-  User.findOne({ email })
-    .then(userDoc => {
-      if (userDoc) {
-        req.flash('error', 'Email exists alredy.');
-        return res.redirect('/signup');
-      }
-      return bcrypt
-        .hash(password, 12)
-        .then(hashedPassword => {
-          const user = new User({
-            email,
-            password: hashedPassword,
-            cart: { items: [] },
-          });
-          return user.save();
-        })
-        .then(() => {
-          res.redirect('/login');
-          return transporter.sendMail({
-            to: email,
-            from: 'tsvetkovv22@gmail.com',
-            subject: 'Signup succseded',
-            html: '<h1>You succsessfuly signed up!</h1>',
-          });
-        })
-        .catch(error => {});
+  bcrypt
+    .hash(password, 12)
+    .then(hashedPassword => {
+      const user = new User({
+        email,
+        password: hashedPassword,
+        cart: { items: [] },
+      });
+      return user.save();
     })
-    .catch(error => console.log(error));
+    .then(() => {
+      res.redirect('/login');
+      return transporter.sendMail({
+        to: email,
+        from: 'tsvetkovv22@gmail.com',
+        subject: 'Signup succseded',
+        html: '<h1>You succsessfuly signed up!</h1>',
+      });
+    })
+    .catch(error => {
+      console.log('TCL: exports.postSignup -> error', error);
+    });
 };
 
 exports.getReset = (req, res, next) => {
