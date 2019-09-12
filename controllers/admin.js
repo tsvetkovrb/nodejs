@@ -1,3 +1,4 @@
+const { body, validationResult } = require('express-validator/check');
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -5,6 +6,9 @@ exports.getAddProduct = (req, res, next) => {
     pageTitle: 'Add product',
     path: '/admin/add-product',
     editing: false,
+    hasError: false,
+    errorMessage: null,
+    validationErrors: [],
   });
 };
 
@@ -22,11 +26,14 @@ exports.getEditProduct = (req, res, next) => {
       if (!product) {
         return res.redirect('/');
       }
-      res.render('admin/edit-product', {
+      return res.render('admin/edit-product', {
         pageTitle: 'Edit product',
         path: '/admin/edit-product',
         editing: editMode,
         product,
+        hasError: false,
+        errorMessage: null,
+        validationErrors: [],
       });
     })
     .catch(error => console.log(error));
@@ -34,6 +41,26 @@ exports.getEditProduct = (req, res, next) => {
 
 exports.postEditProduct = (req, res, next) => {
   const { title, imageUrl, price, description, editProductId } = req.body;
+
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Edit product',
+      path: '/admin/edit-product',
+      editing: true,
+      hasError: true,
+      product: {
+        title,
+        imageUrl,
+        price,
+        description,
+        _id: editProductId,
+      },
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
 
   Product.findById(editProductId)
     .then(product => {
@@ -55,6 +82,23 @@ exports.postEditProduct = (req, res, next) => {
 
 exports.postAddProduct = (req, res) => {
   const { title, imageUrl, price, description } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add product',
+      path: '/admin/edit-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title,
+        imageUrl,
+        price,
+        description,
+      },
+      errorMessage: errors.array()[0].msg,
+      validationErrors: errors.array(),
+    });
+  }
   const product = new Product({
     price,
     title,
