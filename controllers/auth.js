@@ -161,7 +161,9 @@ exports.postSignup = (req, res, next) => {
       });
     })
     .catch(error => {
-      console.log('TCL: exports.postSignup -> error', error);
+      const err = new Error(error)
+      err.httpStatusCode = 500;
+      return next(err)
     });
 };
 
@@ -210,7 +212,11 @@ exports.postReset = (req, res, next) => {
           });
         });
       })
-      .catch(error => {});
+      .catch(error => {
+        const err = new Error(error)
+        err.httpStatusCode = 500;
+        return next(err)
+      });
   });
 };
 
@@ -237,7 +243,11 @@ exports.getNewPassword = (req, res, nex) => {
         passwordToken: token,
       });
     })
-    .catch(error => {});
+    .catch(error => {
+      const err = new Error(error)
+      err.httpStatusCode = 500;
+      return next(err)
+    });
 };
 
 exports.postNewPassword = (req, res, next) => {
@@ -263,5 +273,9 @@ exports.postNewPassword = (req, res, next) => {
     .then(() => {
       res.redirect('/login');
     })
-    .catch(error => {});
+    .catch(error => {
+      const err = new Error(error)
+      err.httpStatusCode = 500;
+      return next(err)
+    });
 };

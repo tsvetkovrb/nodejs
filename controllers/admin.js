@@ -1,4 +1,4 @@
-const ObjectId = require('mongoose').Types.ObjectId;
+// const ObjectId = require('mongoose').Types.ObjectId;
 const { validationResult } = require('express-validator/check');
 const Product = require('../models/product');
 
@@ -37,7 +37,11 @@ exports.getEditProduct = (req, res, next) => {
         validationErrors: [],
       });
     })
-    .catch(error => console.log(error));
+    .catch(error => {
+      const err = new Error(error)
+      err.httpStatusCode = 500;
+      return next(err)
+    });
 };
 
 exports.postEditProduct = (req, res, next) => {
@@ -77,7 +81,6 @@ exports.postEditProduct = (req, res, next) => {
         res.redirect('/admin/products');
       });
     })
-
     .catch(error => {
       const err = new Error(error)
       err.httpStatusCode = 500;
@@ -105,7 +108,7 @@ exports.postAddProduct = (req, res, next) => {
     });
   }
   const product = new Product({
-    _id: new ObjectId('5d7aaa63a87c9b399c808ea8'),
+    // _id: new ObjectId('5d7aaa63a87c9b399c808ea8'),
     price,
     title,
     description,
