@@ -1,5 +1,5 @@
 // const ObjectId = require('mongoose').Types.ObjectId;
-const { validationResult } = require('express-validator/check');
+const { validationResult } = require('express-validator');
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -38,14 +38,31 @@ exports.getEditProduct = (req, res, next) => {
       });
     })
     .catch(error => {
-      const err = new Error(error)
+      const err = new Error(error);
       err.httpStatusCode = 500;
-      return next(err)
+      return next(err);
     });
 };
 
 exports.postEditProduct = (req, res, next) => {
-  const { title, imageUrl, price, description, editProductId } = req.body;
+  const { title, price, description, editProductId } = req.body;
+  const image = req.file;
+
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add Product',
+      path: '/admin/add-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title,
+        price,
+        description,
+      },
+      errorMessage: 'Attached file is not an image.',
+      validationErrors: [],
+    });
+  }
 
   const errors = validationResult(req);
 
@@ -57,7 +74,6 @@ exports.postEditProduct = (req, res, next) => {
       hasError: true,
       product: {
         title,
-        imageUrl,
         price,
         description,
         _id: editProductId,
@@ -75,22 +91,43 @@ exports.postEditProduct = (req, res, next) => {
       product.title = title;
       product.price = price;
       product.description = description;
-      product.imageUrl = imageUrl;
+      if (image) {
+        product.imageUrl = image.path;
+      }
       return product.save().then(result => {
         console.log('Updated product');
         res.redirect('/admin/products');
       });
     })
     .catch(error => {
-      const err = new Error(error)
+      const err = new Error(error);
       err.httpStatusCode = 500;
-      return next(err)
+      return next(err);
     });
 };
 
 exports.postAddProduct = (req, res, next) => {
-  const { title, imageUrl, price, description } = req.body;
+  const { title, price, description } = req.body;
+  const image = req.file;
+
+  if (!image) {
+    return res.status(422).render('admin/edit-product', {
+      pageTitle: 'Add product',
+      path: '/admin/add-product',
+      editing: false,
+      hasError: true,
+      product: {
+        title,
+        price,
+        description,
+      },
+      errorMessage: 'Attached file is not an image',
+      validationErrors: [],
+    });
+  }
+
   const errors = validationResult(req);
+
   if (!errors.isEmpty()) {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add product',
@@ -99,7 +136,6 @@ exports.postAddProduct = (req, res, next) => {
       hasError: true,
       product: {
         title,
-        imageUrl,
         price,
         description,
       },
@@ -107,8 +143,10 @@ exports.postAddProduct = (req, res, next) => {
       validationErrors: errors.array(),
     });
   }
+
+  const imageUrl = image.path;
+
   const product = new Product({
-    // _id: new ObjectId('5d7aaa63a87c9b399c808ea8'),
     price,
     title,
     description,
@@ -122,9 +160,9 @@ exports.postAddProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(error => {
-      const err = new Error(error)
+      const err = new Error(error);
       err.httpStatusCode = 500;
-      return next(err)
+      return next(err);
     });
 };
 
@@ -137,9 +175,9 @@ exports.postDeleteProduct = (req, res, next) => {
       res.redirect('/admin/products');
     })
     .catch(error => {
-      const err = new Error(error)
+      const err = new Error(error);
       err.httpStatusCode = 500;
-      return next(err)
+      return next(err);
     });
 };
 
@@ -157,8 +195,8 @@ exports.getProducts = (req, res, next) => {
       });
     })
     .catch(error => {
-      const err = new Error(error)
+      const err = new Error(error);
       err.httpStatusCode = 500;
-      return next(err)
+      return next(err);
     });
 };

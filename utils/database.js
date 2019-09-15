@@ -3,18 +3,18 @@ const MongoClient = mongodb.MongoClient;
 
 let _db;
 
-const mongoConnect = (callback) => {
-  MongoClient.connect(process.env.MONGODB_URI)
+const mongoConnect = callback => {
+  MongoClient.connect(process.env.MONGODB_URI, { useNewUrlParser: true })
     .then(client => {
       _db = client.db();
       console.log('Connected!');
-      callback()
+      callback();
     })
     .catch(error => {
       console.log(error);
       throw error;
     });
-}
+};
 
 const getDb = () => {
   if (_db) {
@@ -22,7 +22,7 @@ const getDb = () => {
   }
 
   throw 'No databese found';
-}
+};
 
 exports.mongoConnect = mongoConnect;
 exports.getDb = getDb;

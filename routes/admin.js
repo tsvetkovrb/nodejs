@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const { body } = require('express-validator/check');
+const { body } = require('express-validator');
 
 const admminController = require('../controllers/admin');
 const checkIsLoggedIn = require('../middlewares/checkIsLoggedIn');
@@ -12,7 +12,6 @@ router.post(
     body('title')
       .isString()
       .isLength({ min: 3 }),
-    body('imageUrl').isURL(),
     body('price').isFloat(),
     body('description').isLength({ min: 5, max: 120 }),
   ],
@@ -31,7 +30,6 @@ router.post(
     body('title')
       .isString()
       .isLength({ min: 3 }),
-    body('imageUrl').isURL(),
     body('price').isFloat(),
     body('description').isLength({ min: 5, max: 120 }),
   ],
