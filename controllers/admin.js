@@ -1,5 +1,7 @@
 // const ObjectId = require('mongoose').Types.ObjectId;
 const { validationResult } = require('express-validator');
+const fileHelper = require('../utils/file');
+
 const Product = require('../models/product');
 
 exports.getAddProduct = (req, res, next) => {
@@ -52,12 +54,13 @@ exports.postEditProduct = (req, res, next) => {
     return res.status(422).render('admin/edit-product', {
       pageTitle: 'Add Product',
       path: '/admin/add-product',
-      editing: false,
+      editing: true,
       hasError: true,
       product: {
         title,
         price,
         description,
+        _id: editProductId,
       },
       errorMessage: 'Attached file is not an image.',
       validationErrors: [],
@@ -85,6 +88,10 @@ exports.postEditProduct = (req, res, next) => {
 
   Product.findById(editProductId)
     .then(product => {
+      console.log(
+        'HHHHHHHHHHHHHHHHHHHHHHHHh: ',
+        product.userId.toString() !== req.user._id.toString(),
+      );
       if (product.userId.toString() !== req.user._id.toString()) {
         return res.redirect('/');
       }
@@ -92,6 +99,7 @@ exports.postEditProduct = (req, res, next) => {
       product.price = price;
       product.description = description;
       if (image) {
+        fileHelper.deleteFile(product.imageUrl);
         product.imageUrl = image.path;
       }
       return product.save().then(result => {
@@ -169,8 +177,14 @@ exports.postAddProduct = (req, res, next) => {
 exports.postDeleteProduct = (req, res, next) => {
   const { productId: _id } = req.body;
   const { _id: userId } = req.user;
-
-  Product.deleteOne({ _id, userId })
+  Product.findById(_id)
+    .then(product => {
+      if (!product) {
+        return next(new Error('Product not found!'));
+      }
+      fileHelper.deleteFile(product.imageUrl);
+      return Product.deleteOne({ _id, userId });
+    })
     .then(() => {
       res.redirect('/admin/products');
     })

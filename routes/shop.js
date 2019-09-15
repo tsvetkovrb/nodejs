@@ -12,5 +12,6 @@ router.post('/cart', checkIsLoggedIn, shopController.postCart);
 router.post('/card-delete-item', checkIsLoggedIn, shopController.postCartDeleteProduct);
 router.get('/orders', checkIsLoggedIn, shopController.getOrders);
 router.post('/create-order', checkIsLoggedIn, shopController.postOrder);
+router.get('/orders/:orderId', checkIsLoggedIn, shopController.getInvoice)
 
 module.exports = router;
