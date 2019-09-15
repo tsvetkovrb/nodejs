@@ -36,10 +36,10 @@ router.post(
   checkIsLoggedIn,
   admminController.postEditProduct,
 );
-router.post(
-  '/delete-product',
+router.delete(
+  '/product/:productId',
   checkIsLoggedIn,
-  admminController.postDeleteProduct,
+  admminController.deleteProduct,
 );
 
 exports.routes = router;

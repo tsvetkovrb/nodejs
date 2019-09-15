@@ -4,6 +4,8 @@ const fs = require('fs');
 const path = require('path');
 const PDFDocument = require('pdfkit');
 
+const ITEMS_PER_PAGE = 1;
+
 exports.getProducts = (req, res, next) => {
   Product.find()
     .then(products => {
@@ -38,12 +40,28 @@ exports.getProduct = (req, res, next) => {
 };
 
 exports.getIndex = (req, res, next) => {
+  const page = +req.query.page || 1;
+  let totalItems = 0;
+
   Product.find()
+    .countDocuments()
+    .then(numberProduct => {
+      totalItems = numberProduct;
+      return Product.find()
+        .skip((page - 1) * ITEMS_PER_PAGE)
+        .limit(ITEMS_PER_PAGE);
+    })
     .then(products => {
       res.render('shop/index', {
         prods: products,
         pageTitle: 'Shop',
         path: '/',
+        currentPage: page,
+        hasNextPage: ITEMS_PER_PAGE * page < totalItems,
+        hasPreviousPage: page > 1,
+        nextPage: page + 1,
+        previousPage: page - 1,
+        lastPage: Math.ceil(totalItems / ITEMS_PER_PAGE),
       });
     })
     .catch(error => {
@@ -178,13 +196,15 @@ exports.getInvoice = (req, res, next) => {
       pdfDoc.text('---------------------------------------');
       let totalPrice = 0;
       order.products.forEach(prod => {
-        totalPrice += prod.quantity * prod.product.price
-        pdfDoc.fontSize(14).text(
-          `${prod.product.title} - ${prod.quantity} x $${prod.product.price}`,
-        );
+        totalPrice += prod.quantity * prod.product.price;
+        pdfDoc
+          .fontSize(14)
+          .text(
+            `${prod.product.title} - ${prod.quantity} x $${prod.product.price}`,
+          );
       });
-      pdfDoc.text('------------------------')
-      pdfDoc.fontSize(20).text(`Total price: ${totalPrice}`)
+      pdfDoc.text('------------------------');
+      pdfDoc.fontSize(20).text(`Total price: ${totalPrice}`);
       pdfDoc.end();
 
       // fs.readFile(invoicePath, (error, data) => {
