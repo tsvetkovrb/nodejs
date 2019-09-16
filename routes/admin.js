@@ -4,17 +4,12 @@ const { body } = require('express-validator');
 
 const admminController = require('../controllers/admin');
 const checkIsLoggedIn = require('../middlewares/checkIsLoggedIn');
+const validation = require('../middlewares/validation');
 
 router.get('/add-product', checkIsLoggedIn, admminController.getAddProduct);
 router.post(
   '/add-product',
-  [
-    body('title')
-      .isString()
-      .isLength({ min: 3 }),
-    body('price').isFloat(),
-    body('description').isLength({ min: 5, max: 120 }),
-  ],
+  validation.postAddProduct,
   checkIsLoggedIn,
   admminController.postAddProduct,
 );
@@ -26,13 +21,7 @@ router.get(
 );
 router.post(
   '/edit-product',
-  [
-    body('title')
-      .isString()
-      .isLength({ min: 3 }),
-    body('price').isFloat(),
-    body('description').isLength({ min: 5, max: 120 }),
-  ],
+  validation.postEditProduct,
   checkIsLoggedIn,
   admminController.postEditProduct,
 );
