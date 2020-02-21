@@ -1,5 +1,5 @@
 # nodejs
-Репозиторий с учебным кодом из [курса](https://www.udemy.com/course/nodejs-the-complete-guide/) на Udermy
+Репозиторий с учебным кодом из [курса](https://www.udemy.com/course/nodejs-the-complete-guide/) на Udemy
 
 ## Из курса узнал:
 1. Express.js
